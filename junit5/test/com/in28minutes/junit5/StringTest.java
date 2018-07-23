@@ -4,10 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class StringTest {
 	
@@ -57,6 +62,7 @@ class StringTest {
 	}
 	
 	@Test //same as before, but inline
+	@RepeatedTest(5) //test runs 5 times. New feature in Junit5
 	void contains_basic_inline() {
 		assertTrue("abcdefgh".contains("cd"));
 	}
@@ -71,7 +77,8 @@ class StringTest {
 	}
 	
 	@Test
-	void lenght_exception() {
+	@DisplayName("When string is null, throw an exception")
+	void lenght_exception() { //In Junit5 does not need to be public
 		String str = "NotNull";
 		assertThrows(NullPointerException.class,
 				() -> {
@@ -82,5 +89,35 @@ class StringTest {
 				);
 
 	}
+	
+	@Test
+	void length_greater_than_zero() {
+		assertTrue("ABCD".length()>0);
+		assertTrue("D".length()>0);
+		assertTrue("FHD".length()>0);	
+	}
+	
+	@ParameterizedTest
+	@ValueSource(strings= {"ABCD","ABC","A"})
+	void length_greater_than_zero_parameterized_test(String str) {
+		assertTrue(str.length()>0);
+		assertTrue(str.length()>0);
+		assertTrue(str.length()>0);
+	}
+	
+	@ParameterizedTest
+	@DisplayName("CVS test")
+	@CsvSource(value= {"abcd, ABCD", "abc, ABC","'',''", "klm, KLM"})
+	void uppercase(String word, String capitalizedWord) {
+		assertEquals(capitalizedWord, word.toUpperCase());
+	}
+	
+	@ParameterizedTest(name = "{0} length is {1}") // names can be added here (for clarity)
+	@DisplayName("CVS test for lenght")
+	@CsvSource(value= {"abcd, 4", "abc, 3","'', 15", "klm, 3"})
+	void length(String word, int expectedLength) {
+		assertEquals(expectedLength, word.length());
+	}
+	
 }
  
