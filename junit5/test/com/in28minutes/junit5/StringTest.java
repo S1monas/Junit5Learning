@@ -2,9 +2,13 @@ package com.in28minutes.junit5;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,6 +19,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class StringTest {
+	
+	private String str;
 	
 	@BeforeAll
 	static void beforeAll() { //must be static
@@ -61,11 +67,11 @@ class StringTest {
 		assertTrue(result);
 	}
 	
-	@Test //same as before, but inline
+	/*@Test //same as before, but inline
 	@RepeatedTest(5) //test runs 5 times. New feature in Junit5
 	void contains_basic_inline() {
 		assertTrue("abcdefgh".contains("cd"));
-	}
+	}*/
 
 	@Test
 	void split_basic() {
@@ -91,6 +97,7 @@ class StringTest {
 	}
 	
 	@Test
+	@Disabled // Junit4 @Ingnored - Turns off a test.
 	void length_greater_than_zero() {
 		assertTrue("ABCD".length()>0);
 		assertTrue("D".length()>0);
@@ -119,5 +126,34 @@ class StringTest {
 		assertEquals(expectedLength, word.length());
 	}
 	
+	@Test
+	void performanceTest()	{
+		assertTimeout(Duration.ofSeconds(5), ()	-> {
+			for(int i=0; i<=10; i++	) {
+				int j = i;
+				System.out.println(j);
+			}
+		}
+	    );
+	}
+	
+	@Nested
+	class EmptyStringTests {
+		
+		@BeforeEach
+		void setToEmpty() {
+			str = "";
+		}
+		
+		@Test
+		void lengthIsZero() {
+			assertEquals(0,str.length());
+		}
+		
+		@Test
+		void uppercaseIsEmpty() {
+			assertEquals("",str.toUpperCase());
+		}
+	
+	}
 }
- 
